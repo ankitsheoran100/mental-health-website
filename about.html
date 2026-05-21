@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Analyzer — About</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ── NAVBAR ──────────────────────────────────────────────── -->
+<nav class="navbar">
+    <a href="index.html" class="navbar-brand">
+        <span class="brand-icon">🧠</span>
+        <span class="brand-text">Mental Health Analyzer</span>
+    </a>
+    <ul class="navbar-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="tool.html">Try the Tool</a></li>
+        <li><a href="about.html" class="active">About</a></li>
+    </ul>
+</nav>
+
+<!-- ── ABOUT HERO ───────────────────────────────────────────── -->
+<div class="about-hero">
+    <h1>About This Project</h1>
+    <p>
+        A thesis research project combining Multi-Task Learning,
+        Transformer models, and Ordinal Regression for mental health analysis.
+    </p>
+</div>
+
+<!-- ── ABOUT CONTENT ────────────────────────────────────────── -->
+<div class="about-content">
+
+    <h2>Project Overview</h2>
+    <p>
+        This project presents a Multi-Task Deep Learning system that simultaneously
+        predicts sentiment polarity and depression severity from text data.
+        The system is built on a shared DistilBERT encoder with task-specific
+        heads connected by a cross-task attention gate.
+    </p>
+
+    <h2>Model Architecture</h2>
+    <table class="model-table">
+        <tr>
+            <th>Component</th>
+            <th>Details</th>
+        </tr>
+        <tr>
+            <td>Encoder</td>
+            <td>distilbert-base-uncased (66M parameters)</td>
+        </tr>
+        <tr>
+            <td>Hidden Size</td>
+            <td>768 dimensions (CLS token)</td>
+        </tr>
+        <tr>
+            <td>Sentiment Head</td>
+            <td>2-layer MLP (768 → 256 → 3 classes)</td>
+        </tr>
+        <tr>
+            <td>Severity Head</td>
+            <td>CORAL ordinal layer (256 → 4 thresholds)</td>
+        </tr>
+        <tr>
+            <td>Cross-Task Gate</td>
+            <td>Sigmoid gate projecting sentiment logits → severity features</td>
+        </tr>
+        <tr>
+            <td>Loss Function</td>
+            <td>Uncertainty-weighted multi-task loss (Kendall et al., 2018)</td>
+        </tr>
+        <tr>
+            <td>Dropout</td>
+            <td>0.3 (shared encoder), 0.2 (severity refinement)</td>
+        </tr>
+        <tr>
+            <td>Max Sequence Length</td>
+            <td>128 tokens</td>
+        </tr>
+    </table>
+
+    <h2>Tasks</h2>
+    <ul>
+        <li><strong>Sentiment Classification:</strong> Negative / Neutral / Positive (3 classes)</li>
+        <li><strong>Depression Severity:</strong> Minimum / Mild / Moderate / Moderately Severe / Severe (5 PHQ-9 classes)</li>
+    </ul>
+
+    <h2>Datasets Used</h2>
+    <ul>
+        <li>Reddit mental health posts (sentiment labels)</li>
+        <li>DepressionEmo dataset (severity labels)</li>
+        <li>Combined and preprocessed for multi-task training</li>
+    </ul>
+
+    <h2>Preprocessing Pipeline</h2>
+    <ul>
+        <li>URL removal</li>
+        <li>Username anonymisation → [USER]</li>
+        <li>Subreddit tag removal → [COMMUNITY]</li>
+        <li>Repetition normalisation (e.g. sooooo → so)</li>
+        <li>Contraction expansion (can't → cannot)</li>
+        <li>Whitespace normalisation</li>
+    </ul>
+
+    <h2>Baseline Models Compared</h2>
+    <ul>
+        <li>Logistic Regression (TF-IDF features)</li>
+        <li>Linear SVC (TF-IDF features)</li>
+        <li>Single-Task DistilBERT (sentiment only)</li>
+        <li>Single-Task CORAL DistilBERT (severity only)</li>
+        <li><strong>MultiTaskModel</strong> (proposed — best performance)</li>
+    </ul>
+
+    <h2>References</h2>
+    <ul>
+        <li>Kendall, A., Gal, Y., &amp; Cipolla, R. (2018). Multi-task learning using uncertainty to weigh losses.</li>
+        <li>Cao, W. et al. (2020). Rank consistent ordinal regression for neural networks (CORAL).</li>
+        <li>Sanh, V. et al. (2019). DistilBERT, a distilled version of BERT.</li>
+    </ul>
+
+    <div class="disclaimer">
+        ⚠️ <strong>Disclaimer:</strong> This tool is for academic research only.
+        It is NOT a clinical diagnostic tool and must not be used as a substitute
+        for professional mental health evaluation.
+    </div>
+
+</div>
+
+<!-- ── FOOTER ───────────────────────────────────────────────── -->
+<footer class="footer">
+    <p>
+        🧠 Mental Health Sentiment &amp; Severity Detection &nbsp;|&nbsp;
+        Multi-Task DistilBERT + CORAL &nbsp;|&nbsp;
+        <a href="https://huggingface.co/spaces/AnkitSheoran/mental-health-analyzer"
+           target="_blank">Hugging Face Space</a>
+        &nbsp;|&nbsp; Thesis Research Project
+    </p>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

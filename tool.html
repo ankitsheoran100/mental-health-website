@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Analyzer — Try the Tool</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ── NAVBAR ──────────────────────────────────────────────── -->
+<nav class="navbar">
+    <a href="index.html" class="navbar-brand">
+        <span class="brand-icon">🧠</span>
+        <span class="brand-text">Mental Health Analyzer</span>
+    </a>
+    <ul class="navbar-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="tool.html" class="active">Try the Tool</a></li>
+        <li><a href="about.html">About</a></li>
+    </ul>
+</nav>
+
+<!-- ── TOOL HEADER ──────────────────────────────────────────── -->
+<div class="tool-header">
+    <h1>🔍 Mental Health Analyzer</h1>
+    <p>
+        Enter any text below to analyze its sentiment and depression severity level.
+        Powered by Multi-Task DistilBERT + CORAL ordinal regression.
+    </p>
+</div>
+
+<!-- ── IFRAME EMBED ─────────────────────────────────────────── -->
+<div class="container">
+    <div class="iframe-wrapper">
+
+        <!-- Loading message shown while iframe loads -->
+        <div class="iframe-loading" id="iframe-loading">
+            ⏳ Loading the Mental Health Analyzer...
+            This may take 30–60 seconds on first load.
+        </div>
+
+        <!-- ══════════════════════════════════════════════════
+             THIS IS THE KEY EMBED — YOUR HUGGING FACE SPACE
+             Replace AnkitSheoran with your HF username
+             ══════════════════════════════════════════════════ -->
+        <iframe
+            id="streamlit-iframe"
+            src="https://ankitsheoran-mental-health-analyzer.hf.space"
+            title="Mental Health Sentiment and Severity Detection"
+            allow="microphone; camera"
+            style="opacity: 0; transition: opacity 0.4s;">
+        </iframe>
+
+    </div>
+
+    <!-- Disclaimer below the tool -->
+    <div class="disclaimer" style="max-width: 1100px; margin: 0 auto 40px;">
+        ⚠️ <strong>Research Tool Only:</strong> This analyzer is part of an academic
+        thesis project and must NOT be used as a clinical diagnostic tool.
+        Results are for research and educational purposes only.
+        If you or someone you know is struggling with mental health,
+        please contact a qualified mental health professional or crisis helpline.
+    </div>
+</div>
+
+<!-- ── FOOTER ───────────────────────────────────────────────── -->
+<footer class="footer">
+    <p>
+        🧠 Mental Health Sentiment &amp; Severity Analyzer &nbsp;|&nbsp;
+        Multi-Task DistilBERT + CORAL &nbsp;|&nbsp;
+        <a href="https://huggingface.co/spaces/AnkitSheoran/mental-health-analyzer"
+           target="_blank">Hugging Face Space</a>
+        &nbsp;|&nbsp; Thesis Research Project
+    </p>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

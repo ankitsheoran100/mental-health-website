@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Analyzer — Home</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ── NAVBAR ──────────────────────────────────────────────── -->
+<nav class="navbar">
+    <a href="index.html" class="navbar-brand">
+        <span class="brand-icon">🧠</span>
+        <span class="brand-text">Mental Health Analyzer</span>
+    </a>
+    <ul class="navbar-links">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="tool.html">Try the Tool</a></li>
+        <li><a href="about.html">About</a></li>
+    </ul>
+</nav>
+
+<!-- ── HERO ────────────────────────────────────────────────── -->
+<section class="hero">
+    <h1>Mental Health <span>Sentiment & Severity</span> Analyzer</h1>
+    <p>
+        A Multi-Task Deep Learning system for analyzing emotional sentiment
+        and depression severity in text using DistilBERT and CORAL ordinal regression.
+    </p>
+
+    <div class="hero-badges">
+        <span class="badge">🤖 DistilBERT</span>
+        <span class="badge">📊 CORAL Ordinal Regression</span>
+        <span class="badge">🎯 Multi-Task Learning</span>
+        <span class="badge">🧪 PHQ-9 Scale</span>
+        <span class="badge">📝 Thesis Project</span>
+    </div>
+
+    <a href="tool.html" class="btn-primary">🔍 Try the Tool</a>
+    <a href="about.html" class="btn-secondary">Learn More</a>
+</section>
+
+<!-- ── WHAT IT DOES ─────────────────────────────────────────── -->
+<section class="section" style="background: var(--white);">
+    <div class="container">
+        <h2 class="section-title">What This Tool Does</h2>
+        <p class="section-subtitle">
+            Two prediction tasks in one model — trained on combined mental health datasets
+        </p>
+
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon">😊</div>
+                <h3>Sentiment Analysis</h3>
+                <p>
+                    Classifies text into <strong>Positive</strong>,
+                    <strong>Neutral</strong>, or <strong>Negative</strong>
+                    sentiment using the shared DistilBERT encoder with a
+                    2-layer MLP head.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">📊</div>
+                <h3>Depression Severity</h3>
+                <p>
+                    Predicts depression severity across 5 PHQ-9 levels —
+                    Minimum, Mild, Moderate, Moderately Severe, and Severe —
+                    using CORAL ordinal regression.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">🔗</div>
+                <h3>Cross-Task Attention</h3>
+                <p>
+                    A cross-task attention gate allows sentiment predictions
+                    to guide severity detection, improving multi-task
+                    performance through shared representations.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── PHQ-9 SCALE ──────────────────────────────────────────── -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">PHQ-9 Severity Scale</h2>
+        <p class="section-subtitle">
+            The model predicts depression severity mapped to standard PHQ-9 clinical ranges
+        </p>
+
+        <div class="severity-scale">
+            <div class="severity-item minimum">Minimum<br><small>Score 0–4</small></div>
+            <div class="severity-item mild">Mild<br><small>Score 5–9</small></div>
+            <div class="severity-item moderate">Moderate<br><small>Score 10–14</small></div>
+            <div class="severity-item mod-severe">Mod. Severe<br><small>Score 15–19</small></div>
+            <div class="severity-item severe">Severe<br><small>Score 20–27</small></div>
+        </div>
+
+        <div class="disclaimer">
+            ⚠️ <strong>Disclaimer:</strong> This tool is built for academic research purposes only.
+            It is NOT a substitute for professional mental health evaluation or clinical diagnosis.
+            If you are in distress, please contact a qualified mental health professional.
+        </div>
+    </div>
+</section>
+
+<!-- ── MODEL ARCHITECTURE ───────────────────────────────────── -->
+<section class="section" style="background: var(--white);">
+    <div class="container">
+        <h2 class="section-title">Model Architecture</h2>
+        <p class="section-subtitle">MultiTaskModel — DistilBERT backbone with dual task heads</p>
+
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon">🏗️</div>
+                <h3>Shared Encoder</h3>
+                <p>
+                    <code>distilbert-base-uncased</code> processes the input text
+                    and produces a 768-dimensional CLS token representation
+                    shared across both tasks.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">⚡</div>
+                <h3>Uncertainty-Weighted Loss</h3>
+                <p>
+                    Kendall et al. (2018) uncertainty weighting automatically
+                    balances sentiment and severity losses during training
+                    using learnable log-sigma parameters.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">📐</div>
+                <h3>CORAL Ordinal Layer</h3>
+                <p>
+                    Consistent Rank Logits (CORAL) ensures mathematically
+                    consistent ordinal predictions across the 5 severity
+                    classes without rank violations.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── CTA ──────────────────────────────────────────────────── -->
+<section class="section" style="background: var(--primary); text-align: center;">
+    <h2 style="color: white; font-size: 1.8rem; margin-bottom: 12px;">
+        Ready to Try the Analyzer?
+    </h2>
+    <p style="color: rgba(255,255,255,0.75); margin-bottom: 28px; font-size: 1rem;">
+        Enter any text and get instant sentiment and severity predictions.
+    </p>
+    <a href="tool.html" class="btn-primary">🔍 Open the Tool</a>
+</section>
+
+<!-- ── FOOTER ───────────────────────────────────────────────── -->
+<footer class="footer">
+    <p>
+        🧠 Mental Health Sentiment &amp; Severity Analyzer &nbsp;|&nbsp;
+        Multi-Task DistilBERT + CORAL &nbsp;|&nbsp;
+        <a href="https://huggingface.co/spaces/AnkitSheoran/mental-health-analyzer"
+           target="_blank">Hugging Face Space</a>
+        &nbsp;|&nbsp; Thesis Research Project
+    </p>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
