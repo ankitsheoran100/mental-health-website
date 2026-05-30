@@ -8,135 +8,159 @@
 </head>
 <body>
 
-<!-- ── NAVBAR ──────────────────────────────────────────────── -->
+<!-- ── NAVBAR ──────────────────────────────────────────────────── -->
 <nav class="navbar">
     <a href="index.html" class="navbar-brand">
         <span class="brand-icon">🧠</span>
         <span class="brand-text">Mental Health Analyzer</span>
     </a>
-    <ul class="navbar-links">
+    <ul class="nav-links" id="navLinks">
         <li><a href="index.html">Home</a></li>
         <li><a href="tool.html">Try the Tool</a></li>
         <li><a href="about.html" class="active">About</a></li>
     </ul>
+    <button class="nav-toggle" onclick="toggleNav()">☰</button>
 </nav>
 
-<!-- ── ABOUT HERO ───────────────────────────────────────────── -->
-<div class="about-hero">
+<!-- ── PAGE HEADER ─────────────────────────────────────────────── -->
+<section class="page-header">
     <h1>About This Project</h1>
-    <p>
-        A thesis research project combining Multi-Task Learning,
-        Transformer models, and Ordinal Regression for mental health analysis.
-    </p>
-</div>
+    <p>Multi-Task DistilBERT for Joint Sentiment and Depression Severity Detection</p>
+</section>
 
-<!-- ── ABOUT CONTENT ────────────────────────────────────────── -->
-<div class="about-content">
+<!-- ── ABOUT CONTENT ────────────────────────────────────────────── -->
+<section class="about-section">
+    <div class="about-grid">
 
-    <h2>Project Overview</h2>
-    <p>
-        This project presents a Multi-Task Deep Learning system that simultaneously
-        predicts sentiment polarity and depression severity from text data.
-        The system is built on a shared DistilBERT encoder with task-specific
-        heads connected by a cross-task attention gate.
-    </p>
+        <div class="about-card">
+            <h2>🎓 Thesis Overview</h2>
+            <p>
+                This project presents a <strong>multi-task learning framework</strong>
+                for simultaneously detecting sentiment (negative / neutral / positive)
+                and depression severity (minimum / mild / moderate / severe)
+                from text using a single fine-tuned DistilBERT model.
+            </p>
+            <p>
+                The key contribution is a <strong>cross-task attention gate</strong>
+                that routes sentiment information into the severity branch,
+                enabling the model to leverage sentiment context when predicting
+                depression severity. Learnable per-boundary CORAL thresholds
+                replace the fixed 0.5 threshold used in standard CORAL.
+            </p>
+        </div>
 
-    <h2>Model Architecture</h2>
-    <table class="model-table">
-        <tr>
-            <th>Component</th>
-            <th>Details</th>
-        </tr>
-        <tr>
-            <td>Encoder</td>
-            <td>distilbert-base-uncased (66M parameters)</td>
-        </tr>
-        <tr>
-            <td>Hidden Size</td>
-            <td>768 dimensions (CLS token)</td>
-        </tr>
-        <tr>
-            <td>Sentiment Head</td>
-            <td>2-layer MLP (768 → 256 → 3 classes)</td>
-        </tr>
-        <tr>
-            <td>Severity Head</td>
-            <td>CORAL ordinal layer (256 → 4 thresholds)</td>
-        </tr>
-        <tr>
-            <td>Cross-Task Gate</td>
-            <td>Sigmoid gate projecting sentiment logits → severity features</td>
-        </tr>
-        <tr>
-            <td>Loss Function</td>
-            <td>Uncertainty-weighted multi-task loss (Kendall et al., 2018)</td>
-        </tr>
-        <tr>
-            <td>Dropout</td>
-            <td>0.3 (shared encoder), 0.2 (severity refinement)</td>
-        </tr>
-        <tr>
-            <td>Max Sequence Length</td>
-            <td>128 tokens</td>
-        </tr>
-    </table>
+        <div class="about-card">
+            <h2>📐 Architecture Details</h2>
+            <table class="arch-table">
+                <tr><th>Variable</th><th>Value</th></tr>
+                <tr><td>MODEL_NAME</td><td>distilbert-base-uncased</td></tr>
+                <tr><td>MAX_LEN</td><td>256 tokens</td></tr>
+                <tr><td>BATCH_SIZE</td><td>16</td></tr>
+                <tr><td>EPOCHS</td><td>5</td></tr>
+                <tr><td>LR</td><td>2e-5 (encoder), 5e-4 (heads)</td></tr>
+                <tr><td>SEED</td><td>42</td></tr>
+                <tr><td>NUM_SENTIMENT_CLASSES</td><td>3</td></tr>
+                <tr><td>NUM_SEVERITY_CLASSES</td><td>4</td></tr>
+                <tr><td>sentiment_head</td><td>768→512→256→3 (LayerNorm + GELU)</td></tr>
+                <tr><td>cross_task_gate</td><td>3→128→256 (2-layer + Sigmoid)</td></tr>
+                <tr><td>severity_hidden</td><td>768→512→256 (LayerNorm + Residual)</td></tr>
+                <tr><td>severity_refine</td><td>256→256→256 (2-layer + Residual)</td></tr>
+                <tr><td>coral_layer</td><td>CoralLayer(256, num_classes=4)</td></tr>
+                <tr><td>coral_thresholds</td><td>Learnable (3 boundaries)</td></tr>
+                <tr><td>log_sigma_sentiment</td><td>Learnable (Kendall 2018)</td></tr>
+                <tr><td>log_sigma_severity</td><td>Learnable (Kendall 2018)</td></tr>
+            </table>
+        </div>
 
-    <h2>Tasks</h2>
-    <ul>
-        <li><strong>Sentiment Classification:</strong> Negative / Neutral / Positive (3 classes)</li>
-        <li><strong>Depression Severity:</strong> Minimum / Mild / Moderate / Moderately Severe / Severe (5 PHQ-9 classes)</li>
-    </ul>
+        <div class="about-card">
+            <h2>📚 Training Datasets (6 Sources)</h2>
+            <ul class="dataset-list">
+                <li>📄 <strong>Combined_Data.csv</strong> — Sentiment for mental health conditions</li>
+                <li>📄 <strong>Reddit_depression_dataset.csv</strong> — Severity labels (minimum/mild/moderate/severe)</li>
+                <li>📄 <strong>combined.json (DepressionEmo)</strong> — Emotion-based severity mapping</li>
+                <li>🤗 <strong>reddit-depression-cleaned</strong> — HuggingFace Hub dataset</li>
+                <li>🤗 <strong>mental_health_counseling_conversations</strong> — HuggingFace Hub</li>
+                <li>📄 <strong>Suicide_Detection.csv</strong> — Extreme severity (severe class)</li>
+            </ul>
+        </div>
 
-    <h2>Datasets Used</h2>
-    <ul>
-        <li>Reddit mental health posts (sentiment labels)</li>
-        <li>DepressionEmo dataset (severity labels)</li>
-        <li>Combined and preprocessed for multi-task training</li>
-    </ul>
+        <div class="about-card">
+            <h2>🏷️ Label Definitions</h2>
+            <h3 style="margin-bottom:12px;">Sentiment (3-class)</h3>
+            <div class="label-item negative">😞 negative — class 0</div>
+            <div class="label-item neutral">😐 neutral — class 1</div>
+            <div class="label-item positive">😊 positive — class 2</div>
 
-    <h2>Preprocessing Pipeline</h2>
-    <ul>
-        <li>URL removal</li>
-        <li>Username anonymisation → [USER]</li>
-        <li>Subreddit tag removal → [COMMUNITY]</li>
-        <li>Repetition normalisation (e.g. sooooo → so)</li>
-        <li>Contraction expansion (can't → cannot)</li>
-        <li>Whitespace normalisation</li>
-    </ul>
+            <h3 style="margin-top:20px;margin-bottom:12px;">Severity (4-class, PHQ-9 Aligned)</h3>
+            <div class="label-item minimum">🟢 minimum — class 0 (PHQ-9: 0–4)</div>
+            <div class="label-item mild">🟡 mild — class 1 (PHQ-9: 5–9)</div>
+            <div class="label-item moderate">🟠 moderate — class 2 (PHQ-9: 10–14)</div>
+            <div class="label-item severe">🔴 severe — class 3 (PHQ-9: 15–27)</div>
+        </div>
 
-    <h2>Baseline Models Compared</h2>
-    <ul>
-        <li>Logistic Regression (TF-IDF features)</li>
-        <li>Linear SVC (TF-IDF features)</li>
-        <li>Single-Task DistilBERT (sentiment only)</li>
-        <li>Single-Task CORAL DistilBERT (severity only)</li>
-        <li><strong>MultiTaskModel</strong> (proposed — best performance)</li>
-    </ul>
+        <div class="about-card">
+            <h2>📊 Ablation Studies (5 experiments)</h2>
+            <ul class="dataset-list">
+                <li><strong>A1:</strong> Multi-Task vs Single-Task DistilBERT vs Logistic Regression vs SVM</li>
+                <li><strong>A2:</strong> Ordinal Loss — CORAL vs CrossEntropy</li>
+                <li><strong>A3:</strong> Loss Weighting — Uncertainty (Kendall) vs Equal</li>
+                <li><strong>A4:</strong> Cross-Task Gate — With vs Without</li>
+                <li><strong>A5:</strong> Head Architecture — MLP vs Linear</li>
+            </ul>
+        </div>
 
-    <h2>References</h2>
-    <ul>
-        <li>Kendall, A., Gal, Y., &amp; Cipolla, R. (2018). Multi-task learning using uncertainty to weigh losses.</li>
-        <li>Cao, W. et al. (2020). Rank consistent ordinal regression for neural networks (CORAL).</li>
-        <li>Sanh, V. et al. (2019). DistilBERT, a distilled version of BERT.</li>
-    </ul>
+        <div class="about-card">
+            <h2>📖 Key References</h2>
+            <ul class="ref-list">
+                <li>
+                    Kendall, A. &amp; Gal, Y. (2018). Multi-task learning using uncertainty
+                    to weigh losses for scene geometry and semantics. <em>CVPR 2018.</em>
+                </li>
+                <li>
+                    Cao, W. et al. (2020). Rank consistent ordinal regression for neural
+                    networks with application to age estimation. <em>Pattern Recognition Letters.</em>
+                    (CORAL loss)
+                </li>
+                <li>
+                    Sanh, V. et al. (2019). DistilBERT, a distilled version of BERT:
+                    smaller, faster, cheaper and lighter. <em>arXiv:1910.01108.</em>
+                </li>
+            </ul>
+        </div>
 
-    <div class="disclaimer">
-        ⚠️ <strong>Disclaimer:</strong> This tool is for academic research only.
-        It is NOT a clinical diagnostic tool and must not be used as a substitute
-        for professional mental health evaluation.
+        <div class="about-card">
+            <h2>🔗 Project Links</h2>
+            <div class="links-list">
+                <a href="https://huggingface.co/spaces/AnkitSheoran/mental-health-analyzer"
+                   target="_blank" class="link-card hf-link">
+                    🤗 HuggingFace Space — Live Demo
+                </a>
+                <a href="https://github.com/ankitsheoran100/mental-health-website"
+                   target="_blank" class="link-card gh-link">
+                    💻 GitHub — Website Code (ankitsheoran100)
+                </a>
+                <a href="tool.html" class="link-card tool-link">
+                    🔍 Try the Tool
+                </a>
+            </div>
+        </div>
+
     </div>
+</section>
 
-</div>
-
-<!-- ── FOOTER ───────────────────────────────────────────────── -->
+<!-- ── FOOTER ────────────────────────────────────────────────────── -->
 <footer class="footer">
-    <p>
-        🧠 Mental Health Sentiment &amp; Severity Detection &nbsp;|&nbsp;
-        Multi-Task DistilBERT + CORAL &nbsp;|&nbsp;
-        <a href="https://huggingface.co/spaces/AnkitSheoran/mental-health-analyzer"
-           target="_blank">Hugging Face Space</a>
-        &nbsp;|&nbsp; Thesis Research Project
-    </p>
+    <div class="footer-content">
+        <p><strong>Mental Health Analyzer</strong> — Thesis Research Project</p>
+        <p>
+            <a href="https://huggingface.co/spaces/AnkitSheoran/mental-health-analyzer"
+               target="_blank">🤗 HuggingFace Space</a>
+            &nbsp;|&nbsp;
+            <a href="https://github.com/ankitsheoran100/mental-health-website"
+               target="_blank">💻 GitHub</a>
+        </p>
+        <p class="disclaimer">⚠️ Research prototype only. Not a clinical tool.</p>
+    </div>
 </footer>
 
 <script src="js/main.js"></script>
