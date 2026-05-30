@@ -8,7 +8,6 @@
 </head>
 <body>
 
-<!-- ── NAVBAR ──────────────────────────────────────────────────── -->
 <nav class="navbar">
     <a href="index.html" class="navbar-brand">
         <span class="brand-icon">🧠</span>
@@ -22,7 +21,7 @@
     <button class="nav-toggle" onclick="toggleNav()">☰</button>
 </nav>
 
-<!-- ── HERO ────────────────────────────────────────────────────── -->
+<!-- HERO -->
 <section class="hero">
     <div class="hero-content">
         <div class="hero-badge">🎓 Thesis Research Project</div>
@@ -30,46 +29,46 @@
             Multi-Task DistilBERT for<br>
             <span class="highlight">Mental Health Analysis</span>
         </h1>
-        <p class="hero-subtitle">
-            AI-powered simultaneous detection of <strong>sentiment</strong> and
-            <strong>depression severity</strong> using a single transformer model
-            with cross-task attention gating and CORAL ordinal classification.
+        <p class="hero-sub">
+            Simultaneously detects <strong>sentiment</strong> and
+            <strong>depression severity</strong> from text using a single
+            transformer with cross-task attention gating and CORAL ordinal classification.
         </p>
-        <div class="hero-buttons">
-            <a href="tool.html" class="btn btn-primary">🔍 Try the Tool</a>
+        <div class="hero-btns">
+            <a href="tool.html" class="btn btn-primary btn-lg">🔍 Try the Tool</a>
             <a href="https://huggingface.co/spaces/AnkitSheoran/mental-health-analyzer"
-               target="_blank" class="btn btn-hf">🤗 HuggingFace Space</a>
-            <a href="about.html" class="btn btn-secondary">Learn More</a>
+               target="_blank" class="btn btn-hf btn-lg">🤗 HuggingFace Space</a>
+            <a href="about.html" class="btn btn-secondary btn-lg">Learn More</a>
         </div>
     </div>
     <div class="hero-visual">
         <div class="model-card">
-            <div class="model-card-header">Model Architecture</div>
+            <div class="model-card-hdr">Model Architecture</div>
             <div class="arch-row">
-                <span class="arch-label">Input</span>
-                <span class="arch-arrow">→</span>
-                <span class="arch-box">DistilBERT Encoder (256 tokens)</span>
+                <span class="arch-lbl">Input</span>
+                <span class="arch-arr">→</span>
+                <span class="arch-box">DistilBERT Encoder (MAX_LEN=256)</span>
             </div>
             <div class="arch-row">
-                <span class="arch-label">Task 1</span>
-                <span class="arch-arrow">→</span>
-                <span class="arch-box sentiment-box">Sentiment Head (768→512→256→3)</span>
+                <span class="arch-lbl">Task 1</span>
+                <span class="arch-arr">→</span>
+                <span class="arch-box box-sent">Sentiment Head (768→512→256→3)</span>
             </div>
             <div class="arch-row">
-                <span class="arch-label">Gate</span>
-                <span class="arch-arrow">→</span>
-                <span class="arch-box gate-box">Cross-Task Gate (3→128→256)</span>
+                <span class="arch-lbl">Gate</span>
+                <span class="arch-arr">→</span>
+                <span class="arch-box box-gate">Cross-Task Gate (3→128→256)</span>
             </div>
             <div class="arch-row">
-                <span class="arch-label">Task 2</span>
-                <span class="arch-arrow">→</span>
-                <span class="arch-box severity-box">CORAL Severity Head (4-class)</span>
+                <span class="arch-lbl">Task 2</span>
+                <span class="arch-arr">→</span>
+                <span class="arch-box box-sev">CORAL Severity Head (4-class)</span>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ── STATS ────────────────────────────────────────────────────── -->
+<!-- STATS -->
 <section class="stats-section">
     <div class="stats-grid">
         <div class="stat-card">
@@ -91,54 +90,50 @@
     </div>
 </section>
 
-<!-- ── FEATURES ─────────────────────────────────────────────────── -->
+<!-- FEATURES -->
 <section class="features-section">
     <h2 class="section-title">Key Features</h2>
     <div class="features-grid">
         <div class="feature-card">
-            <div class="feature-icon">🧠</div>
+            <div class="fi">🧠</div>
             <h3>Sentiment Classification</h3>
-            <p>Classifies text into <strong>negative</strong>, <strong>neutral</strong>,
-            or <strong>positive</strong> sentiment using a 3-layer MLP head
-            (768→512→256→3) with LayerNorm and GELU.</p>
+            <p>3-layer MLP (768→512→256→3) with LayerNorm + GELU predicts
+            <strong>negative / neutral / positive</strong>.</p>
         </div>
         <div class="feature-card">
-            <div class="feature-icon">📊</div>
+            <div class="fi">📊</div>
             <h3>Depression Severity</h3>
-            <p>Ordinal classification into <strong>minimum, mild, moderate, severe</strong>
-            (PHQ-9 aligned) using CORAL layer with <strong>learnable per-boundary thresholds</strong>.</p>
+            <p>CORAL ordinal head with <strong>learnable per-boundary thresholds</strong>
+            predicts 4 PHQ-9 classes: minimum / mild / moderate / severe.</p>
         </div>
         <div class="feature-card">
-            <div class="feature-icon">🔗</div>
+            <div class="fi">🔗</div>
             <h3>Cross-Task Gate</h3>
-            <p>Sentiment logits pass through a 2-layer MLP sigmoid gate (3→128→256)
-            to condition severity features, enabling multi-task information sharing.</p>
+            <p>2-layer MLP gate (3→128→256+Sigmoid) fuses sentiment logits
+            into severity features with a residual connection.</p>
         </div>
         <div class="feature-card">
-            <div class="feature-icon">⚖️</div>
+            <div class="fi">⚖️</div>
             <h3>Uncertainty Weighting</h3>
-            <p>Homoscedastic uncertainty loss (Kendall et al., CVPR 2018) with
-            learnable log-sigma scalars (<code>log_sigma_sentiment</code>,
-            <code>log_sigma_severity</code>) per task.</p>
+            <p>Homoscedastic uncertainty loss (Kendall 2018) with learnable
+            <code>log_sigma_sentiment</code> and <code>log_sigma_severity</code>.</p>
         </div>
         <div class="feature-card">
-            <div class="feature-icon">🎯</div>
+            <div class="fi">🎯</div>
             <h3>Learnable Thresholds</h3>
-            <p>Per-boundary CORAL thresholds (<code>coral_thresholds</code>) are
-            learned during training. 3 boundaries for 4 severity classes,
-            clamped to (0.1, 0.9) at inference.</p>
+            <p><code>coral_thresholds</code> — 3 per-boundary parameters learned
+            during training, replacing fixed 0.5 cutoffs.</p>
         </div>
         <div class="feature-card">
-            <div class="feature-icon">📈</div>
+            <div class="fi">📈</div>
             <h3>Residual Connections</h3>
-            <p>Two residual skip connections in the severity branch:
-            after the cross-task gate and after severity_refine,
-            preventing feature degradation.</p>
+            <p>Two residual skip connections in the severity branch prevent
+            feature degradation and improve gradient flow.</p>
         </div>
     </div>
 </section>
 
-<!-- ── LABELS ────────────────────────────────────────────────────── -->
+<!-- LABELS -->
 <section class="labels-section">
     <h2 class="section-title">Output Labels</h2>
     <div class="labels-grid">
@@ -150,39 +145,36 @@
         </div>
         <div class="labels-card">
             <h3>📊 Severity (4-class, PHQ-9)</h3>
-            <div class="label-item minimum">🟢 minimum — class 0</div>
-            <div class="label-item mild">🟡 mild — class 1</div>
-            <div class="label-item moderate">🟠 moderate — class 2</div>
-            <div class="label-item severe">🔴 severe — class 3</div>
+            <div class="label-item minimum">🟢 minimum — class 0 (PHQ-9: 0–4)</div>
+            <div class="label-item mild">🟡 mild — class 1 (PHQ-9: 5–9)</div>
+            <div class="label-item moderate">🟠 moderate — class 2 (PHQ-9: 10–14)</div>
+            <div class="label-item severe">🔴 severe — class 3 (PHQ-9: 15–27)</div>
         </div>
     </div>
 </section>
 
-<!-- ── CTA ──────────────────────────────────────────────────────── -->
+<!-- CTA -->
 <section class="cta-section">
     <h2>Try the Live Model</h2>
     <p>Analyse any text for sentiment and depression severity in real time.</p>
-    <div class="cta-buttons">
-        <a href="tool.html" class="btn btn-primary btn-large">🔍 Open the Tool</a>
+    <div class="cta-btns">
+        <a href="tool.html" class="btn btn-primary btn-lg">🔍 Open the Tool</a>
         <a href="https://huggingface.co/spaces/AnkitSheoran/mental-health-analyzer"
-           target="_blank" class="btn btn-hf btn-large">🤗 HuggingFace Space</a>
+           target="_blank" class="btn btn-hf btn-lg">🤗 HuggingFace Space</a>
     </div>
 </section>
 
-<!-- ── FOOTER ────────────────────────────────────────────────────── -->
 <footer class="footer">
     <div class="footer-content">
         <p><strong>Mental Health Analyzer</strong> — Thesis Research Project</p>
         <p>
-            <a href="https://huggingface.co/spaces/AnkitSheoran/mental-health-analyzer"
-               target="_blank">🤗 HuggingFace Space</a>
+            <a href="https://huggingface.co/spaces/AnkitSheoran/mental-health-analyzer" target="_blank">🤗 HuggingFace</a>
             &nbsp;|&nbsp;
-            <a href="https://github.com/ankitsheoran100/mental-health-website"
-               target="_blank">💻 GitHub</a>
+            <a href="https://github.com/ankitsheoran100/mental-health-website" target="_blank">💻 GitHub</a>
             &nbsp;|&nbsp;
             <a href="about.html">About</a>
         </p>
-        <p class="disclaimer">⚠️ Research prototype only. Not a clinical diagnostic tool.</p>
+        <p class="disclaimer">⚠️ Research prototype only. Not a clinical tool.</p>
     </div>
 </footer>
 
