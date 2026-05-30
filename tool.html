@@ -5,428 +5,206 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mental Health Analyzer — Try the Tool</title>
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        /* ── Tool page specific styles ─────────────────────── */
-        .status-bar {
-            background:      #1e3a5f;
-            padding:         12px 48px;
-            display:         flex;
-            align-items:     center;
-            justify-content: center;
-            gap:             12px;
-            font-size:       14px;
-            color:           rgba(255,255,255,0.82);
-        }
-
-        .status-dot {
-            width:         10px;
-            height:        10px;
-            border-radius: 50%;
-            background:    #f59e0b;
-            flex-shrink:   0;
-            animation:     blink 1.4s infinite;
-        }
-
-        .status-dot.live {
-            background: #10b981;
-            animation:  none;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50%       { opacity: 0.25; }
-        }
-
-        /* Wrapper for the iframe area */
-        .embed-section {
-            padding:    36px 48px 56px;
-            background: #f8fafc;
-        }
-
-        .embed-container {
-            max-width:     1120px;
-            margin:        0 auto;
-        }
-
-        /* iframe box */
-        .iframe-box {
-            background:    #fff;
-            border:        1px solid #e2e8f0;
-            border-radius: 20px;
-            box-shadow:    0 24px 64px rgba(0,0,0,0.10);
-            overflow:      hidden;
-            position:      relative;
-            min-height:    900px;
-        }
-
-        /* Loading overlay */
-        .loading-overlay {
-            position:        absolute;
-            inset:           0;
-            background:      #fff;
-            display:         flex;
-            flex-direction:  column;
-            align-items:     center;
-            justify-content: center;
-            z-index:         20;
-            gap:             22px;
-            transition:      opacity 0.5s;
-        }
-
-        .loading-overlay.hidden {
-            opacity:        0;
-            pointer-events: none;
-        }
-
-        .spinner {
-            width:         56px;
-            height:        56px;
-            border:        5px solid #e2e8f0;
-            border-top:    5px solid #2563eb;
-            border-radius: 50%;
-            animation:     spin 0.85s linear infinite;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .loading-text {
-            color:       #64748b;
-            font-size:   1rem;
-            text-align:  center;
-            max-width:   380px;
-            line-height: 1.75;
-            font-family: 'DM Sans', sans-serif;
-        }
-
-        .loading-text strong { color: #1a2332; }
-
-        /* iframe itself */
-        .iframe-box iframe {
-            width:    100%;
-            height:   900px;
-            border:   none;
-            display:  block;
-            opacity:  0;
-            transition: opacity 0.5s;
-        }
-
-        /* Fallback shown if iframe blocked */
-        .fallback-panel {
-            display:         none;
-            flex-direction:  column;
-            align-items:     center;
-            justify-content: center;
-            padding:         80px 32px;
-            text-align:      center;
-            min-height:      500px;
-        }
-
-        .fallback-icon {
-            font-size:     4rem;
-            margin-bottom: 20px;
-        }
-
-        .fallback-panel h3 {
-            font-size:     1.5rem;
-            font-weight:   800;
-            color:         #1a2332;
-            margin-bottom: 14px;
-        }
-
-        .fallback-panel p {
-            color:       #64748b;
-            font-size:   0.97rem;
-            max-width:   480px;
-            line-height: 1.75;
-            margin-bottom: 10px;
-        }
-
-        .open-btn {
-            display:         inline-flex;
-            align-items:     center;
-            gap:             10px;
-            background:      #2563eb;
-            color:           #fff;
-            padding:         16px 36px;
-            border-radius:   10px;
-            text-decoration: none;
-            font-size:       16px;
-            font-weight:     700;
-            margin-top:      24px;
-            transition:      background 0.2s, transform 0.15s;
-            box-shadow:      0 6px 20px rgba(37,99,235,0.35);
-        }
-
-        .open-btn:hover {
-            background: #1d4ed8;
-            transform:  translateY(-2px);
-        }
-
-        .tip-box {
-            background:    #fff8e1;
-            border:        1px solid #fde68a;
-            border-radius: 10px;
-            padding:       14px 20px;
-            font-size:     13px;
-            color:         #92400e;
-            max-width:     500px;
-            margin-top:    20px;
-            line-height:   1.65;
-        }
-
-        /* Direct link below iframe */
-        .direct-link-bar {
-            text-align:  center;
-            padding:     14px 0 4px;
-        }
-
-        .direct-link-bar a {
-            color:           #2563eb;
-            font-size:       14px;
-            font-weight:     600;
-            text-decoration: none;
-        }
-
-        .direct-link-bar a:hover {
-            text-decoration: underline;
-        }
-
-        /* Disclaimer */
-        .tool-disclaimer {
-            display:       flex;
-            gap:           12px;
-            background:    #fffbeb;
-            border:        1px solid #fde68a;
-            border-left:   4px solid #f59e0b;
-            border-radius: 8px;
-            padding:       16px 20px;
-            margin-top:    20px;
-            font-size:     0.90rem;
-            color:         #78350f;
-            line-height:   1.7;
-        }
-
-        @media (max-width: 768px) {
-            .embed-section { padding: 20px 16px 36px; }
-            .status-bar    { padding: 10px 16px; font-size: 13px; }
-            .iframe-box iframe { height: 750px; }
-            .iframe-box    { min-height: 750px; }
-        }
-    </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════════════════
-     NAVBAR
-     HF username: AnkitSheoran  |  GitHub username: ankitsheoran100
-══════════════════════════════════════════════════════════ -->
+<!-- ── NAVBAR ──────────────────────────────────────────────────── -->
 <nav class="navbar">
     <a href="index.html" class="navbar-brand">
         <span class="brand-icon">🧠</span>
         <span class="brand-text">Mental Health Analyzer</span>
     </a>
-    <ul class="navbar-links">
+    <ul class="nav-links" id="navLinks">
         <li><a href="index.html">Home</a></li>
         <li><a href="tool.html" class="active">Try the Tool</a></li>
         <li><a href="about.html">About</a></li>
     </ul>
+    <button class="nav-toggle" onclick="toggleNav()">☰</button>
 </nav>
 
-<!-- ══════════════════════════════════════════════════════════
-     TOOL HEADER
-══════════════════════════════════════════════════════════ -->
-<div class="tool-header">
-    <div class="tool-header-inner">
-        <h1>🔍 Mental Health Analyzer</h1>
-        <p>
-            Enter any text to analyze its emotional sentiment and depression
-            severity. Powered by Multi-Task DistilBERT + CORAL ordinal regression.
-        </p>
+<!-- ── TOOL HEADER ──────────────────────────────────────────────── -->
+<section class="tool-header">
+    <h1>🔍 Try the Model</h1>
+    <p>
+        Enter any text to receive instant <strong>sentiment</strong> and
+        <strong>depression severity</strong> predictions from our
+        Multi-Task DistilBERT model.
+    </p>
+    <div class="disclaimer-box">
+        ⚠️ <strong>Disclaimer:</strong> Research prototype for academic purposes only.
+        NOT a clinical tool. Please consult a qualified mental health professional
+        for any personal concerns.
     </div>
-</div>
+</section>
 
-<!-- ══════════════════════════════════════════════════════════
-     STATUS BAR
-══════════════════════════════════════════════════════════ -->
-<div class="status-bar">
-    <span class="status-dot" id="status-dot"></span>
-    <span id="status-text">
-        ⏳ Connecting to Hugging Face Space — may take 30–60 seconds on first load…
-    </span>
-</div>
+<!-- ── TOOL SECTION ──────────────────────────────────────────────── -->
+<section class="tool-section">
 
-<!-- ══════════════════════════════════════════════════════════
-     EMBED SECTION — iframe + fallback
-     HF Space URL format: https://USERNAME-SPACENAME.hf.space
-     AnkitSheoran + mental-health-analyzer
-     = https://ankitsheoran-mental-health-analyzer.hf.space
-══════════════════════════════════════════════════════════ -->
-<div class="embed-section">
-    <div class="embed-container">
+    <!-- Quick Demo (JS keyword-based for instant results) -->
+    <div class="demo-box">
+        <h2>⚡ Quick Demo</h2>
+        <p style="color:#6b7280;">
+            Type text below for an instant keyword-based preview.
+            For full AI predictions with probability scores, use the
+            <a href="https://huggingface.co/spaces/AnkitSheoran/mental-health-analyzer"
+               target="_blank">HuggingFace Space</a>.
+        </p>
 
-        <div class="iframe-box" id="iframe-box">
+        <textarea
+            id="demoInput"
+            placeholder="Enter text here... (Ctrl+Enter to analyse)"
+            rows="5"
+        ></textarea>
 
-            <!-- LOADING OVERLAY (shown while Space wakes up) -->
-            <div class="loading-overlay" id="loading-overlay">
-                <div class="spinner"></div>
-                <p class="loading-text">
-                    ⏳ Loading the Mental Health Analyzer…<br>
-                    Waking up the Hugging Face Space.<br>
-                    <strong>Please wait up to 60 seconds.</strong>
-                </p>
-            </div>
+        <div class="demo-buttons">
+            <button class="btn btn-primary" onclick="analyseText()">🔍 Analyse</button>
+            <button class="btn btn-secondary" onclick="clearDemo()">🗑️ Clear</button>
+        </div>
 
-            <!-- FALLBACK (shown if iframe blocked after 75s) -->
-            <div class="fallback-panel" id="fallback-panel">
-                <div class="fallback-icon">🧠</div>
-                <h3>Open the Analyzer Directly</h3>
-                <p>
-                    The embedded view could not load — this usually happens
-                    because the Hugging Face Space is still sleeping or
-                    the browser blocked the cross-origin iframe.
-                </p>
-                <p>
-                    Click below to open the full working analyzer on Hugging Face:
-                </p>
-                <a
-                    href="https://huggingface.co/spaces/AnkitSheoran/mental-health-analyzer"
-                    target="_blank"
-                    class="open-btn">
-                    🚀 Open Mental Health Analyzer
-                </a>
-                <div class="tip-box">
-                    💡 <strong>Tip:</strong> Once you open the Space on Hugging Face
-                    and it loads, come back to this page —
-                    the embedded view will then work automatically.
+        <div class="example-texts">
+            <strong>Load example:</strong>
+            <button class="example-btn" onclick="loadExample(0)">😊 Positive</button>
+            <button class="example-btn" onclick="loadExample(1)">😞 Negative / Severe</button>
+            <button class="example-btn" onclick="loadExample(2)">😐 Neutral / Mild</button>
+            <button class="example-btn" onclick="loadExample(3)">🔴 Severe</button>
+        </div>
+
+        <div id="demoResult" class="demo-result" style="display:none;">
+            <h3>Quick Preview Results</h3>
+            <div class="result-grid">
+                <div class="result-card">
+                    <div class="result-label">🧠 Sentiment</div>
+                    <div class="result-value" id="sentimentResult">—</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label">📊 Severity</div>
+                    <div class="result-value" id="severityResult">—</div>
                 </div>
             </div>
-
-            <!-- ════════════════════════════════════════════
-                 IFRAME — Hugging Face Space embedded
-                 HF Username:  AnkitSheoran
-                 Space name:   mental-health-analyzer
-                 URL formula:  https://HF_USERNAME-SPACE_NAME.hf.space
-                              (all lowercase, hyphen separator)
-                 Result:       https://ankitsheoran-mental-health-analyzer.hf.space
-                 ════════════════════════════════════════════ -->
-            <iframe
-                id="streamlit-iframe"
-                src="https://ankitsheoran-mental-health-analyzer.hf.space"
-                title="Mental Health Sentiment and Severity Analyzer"
-                allow="clipboard-read; clipboard-write; microphone">
-            </iframe>
-
+            <p class="result-note">
+                ℹ️ This is a keyword-based preview only. For full AI model predictions
+                with CORAL probability scores, use the
+                <a href="https://huggingface.co/spaces/AnkitSheoran/mental-health-analyzer"
+                   target="_blank">🤗 HuggingFace Space</a>.
+            </p>
         </div>
-
-        <!-- Always-visible direct link below the iframe -->
-        <div class="direct-link-bar">
-            <a
-                href="https://huggingface.co/spaces/AnkitSheoran/mental-health-analyzer"
-                target="_blank">
-                🔗 Open directly on Hugging Face ↗
-            </a>
-        </div>
-
-        <!-- Disclaimer -->
-        <div class="tool-disclaimer">
-            ⚠️&nbsp;
-            <span>
-                <strong>Research Tool Only:</strong>
-                This analyzer is part of an academic thesis project and must NOT
-                be used as a clinical diagnostic tool. Results are for research
-                and educational purposes only. If you or someone you know is
-                struggling with mental health, please contact a qualified mental
-                health professional or crisis helpline immediately.
-            </span>
-        </div>
-
     </div>
-</div>
 
-<!-- ══════════════════════════════════════════════════════════
-     FOOTER
-     GitHub: ankitsheoran100  |  HF: AnkitSheoran
-══════════════════════════════════════════════════════════ -->
-<footer class="footer">
-    <p>
-        🧠 Mental Health Sentiment &amp; Severity Analyzer
-        <span class="footer-sep">|</span>
-        Multi-Task DistilBERT + CORAL Ordinal Regression
-        <span class="footer-sep">|</span>
+    <!-- Full HuggingFace Space Embed -->
+    <div class="hf-embed-section">
+        <h2>🤗 Full AI Model Interface</h2>
+        <p style="color:#6b7280;">
+            The complete Multi-Task DistilBERT model with full probability scores
+            and CORAL ordinal predictions:
+        </p>
+
         <a href="https://huggingface.co/spaces/AnkitSheoran/mental-health-analyzer"
-           target="_blank">
-            Hugging Face Space
+           target="_blank"
+           class="btn btn-hf btn-large"
+           style="display:inline-block;margin-bottom:20px;">
+            🤗 Open Full App in HuggingFace
         </a>
-        <span class="footer-sep">|</span>
-        <a href="https://github.com/ankitsheoran100/mental-health-website"
-           target="_blank">
-            GitHub
-        </a>
-        <span class="footer-sep">|</span>
-        Thesis Research Project
-    </p>
+
+        <!-- Embedded iframe of HuggingFace Space -->
+        <div class="iframe-container" id="iframeContainer">
+            <div class="iframe-loading" id="iframeLoading">
+                <p>⏳ Loading HuggingFace Space... (~30 seconds first load)</p>
+                <p style="font-size:0.85rem;color:#9ca3af;">
+                    If it does not load,
+                    <a href="https://huggingface.co/spaces/AnkitSheoran/mental-health-analyzer"
+                       target="_blank">open directly in HuggingFace</a>.
+                </p>
+            </div>
+            <iframe
+                id="hfIframe"
+                src="https://ankitsheoran-mental-health-analyzer.hf.space"
+                frameborder="0"
+                width="100%"
+                height="750"
+                title="Mental Health Analyzer — HuggingFace Space"
+                loading="lazy"
+                onload="document.getElementById('iframeLoading').style.display='none';"
+                onerror="handleIframeError()"
+            ></iframe>
+        </div>
+
+        <p style="font-size:0.8rem;color:#9ca3af;text-align:center;margin-top:8px;">
+            Space URL:
+            <a href="https://huggingface.co/spaces/AnkitSheoran/mental-health-analyzer"
+               target="_blank">
+                huggingface.co/spaces/AnkitSheoran/mental-health-analyzer
+            </a>
+        </p>
+    </div>
+
+</section>
+
+<!-- ── HOW IT WORKS ──────────────────────────────────────────────── -->
+<section class="how-section">
+    <h2 class="section-title">How It Works</h2>
+    <div class="steps-grid">
+        <div class="step-card">
+            <div class="step-num">1</div>
+            <h3>Text Input</h3>
+            <p>Text is tokenised with DistilBERT's WordPiece tokeniser.
+            MAX_LEN=256 tokens, padding/truncation applied.</p>
+        </div>
+        <div class="step-card">
+            <div class="step-num">2</div>
+            <h3>Encoding</h3>
+            <p>DistilBERT encoder extracts [CLS] token representation
+            (768-dim) from all 256 tokens.</p>
+        </div>
+        <div class="step-card">
+            <div class="step-num">3</div>
+            <h3>Sentiment Head</h3>
+            <p>3-layer MLP (768→512→256→3) with LayerNorm + GELU
+            predicts sentiment class (0–2).</p>
+        </div>
+        <div class="step-card">
+            <div class="step-num">4</div>
+            <h3>Cross-Task Gate</h3>
+            <p>Sentiment logits pass through 2-layer MLP gate (3→128→256)
+            to condition severity features with residual connection.</p>
+        </div>
+        <div class="step-card">
+            <div class="step-num">5</div>
+            <h3>CORAL + Thresholds</h3>
+            <p>Gated severity features → severity_refine → CORAL ordinal output.
+            Learnable per-boundary thresholds (not fixed 0.5).</p>
+        </div>
+        <div class="step-card">
+            <div class="step-num">6</div>
+            <h3>Results</h3>
+            <p>Returns sentiment class (0–2) and severity class (0–3)
+            simultaneously with confidence scores.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ── FOOTER ────────────────────────────────────────────────────── -->
+<footer class="footer">
+    <div class="footer-content">
+        <p><strong>Mental Health Analyzer</strong> — Thesis Research Project</p>
+        <p>
+            <a href="https://huggingface.co/spaces/AnkitSheoran/mental-health-analyzer"
+               target="_blank">🤗 HuggingFace Space</a>
+            &nbsp;|&nbsp;
+            <a href="https://github.com/ankitsheoran100/mental-health-website"
+               target="_blank">💻 GitHub</a>
+        </p>
+        <p class="disclaimer">⚠️ Research prototype only. Not a clinical tool.</p>
+    </div>
 </footer>
 
 <script src="js/main.js"></script>
-
-<!-- ══════════════════════════════════════════════════════════
-     IFRAME CONTROLLER SCRIPT
-══════════════════════════════════════════════════════════ -->
 <script>
-(function () {
-    var iframe         = document.getElementById("streamlit-iframe");
-    var loadingOverlay = document.getElementById("loading-overlay");
-    var fallbackPanel  = document.getElementById("fallback-panel");
-    var statusDot      = document.getElementById("status-dot");
-    var statusText     = document.getElementById("status-text");
-
-    var isLoaded = false;
-
-    // ── iframe loaded successfully ────────────────────────────
-    iframe.addEventListener("load", function () {
-        isLoaded = true;
-        // Hide loading overlay
-        loadingOverlay.classList.add("hidden");
-        // Show iframe
-        iframe.style.opacity = "1";
-        // Update status bar
-        statusDot.classList.add("live");
-        statusText.textContent = "✅ Hugging Face Space is live — analyzer is ready to use";
-    });
-
-    // ── Status messages while waiting ─────────────────────────
-    setTimeout(function () {
-        if (!isLoaded) {
-            statusText.textContent =
-                "⏳ Still loading — Space is waking up from sleep…";
-        }
-    }, 15000);
-
-    setTimeout(function () {
-        if (!isLoaded) {
-            statusText.textContent =
-                "⏳ Loading model into memory — DistilBERT is large, almost there…";
-        }
-    }, 40000);
-
-    // ── Fallback after 75 seconds ─────────────────────────────
-    setTimeout(function () {
-        if (!isLoaded) {
-            // Hide spinner overlay
-            loadingOverlay.style.display = "none";
-            // Hide iframe
-            iframe.style.display = "none";
-            // Show fallback panel
-            fallbackPanel.style.display = "flex";
-            // Update status
-            statusDot.style.background  = "#dc2626";
-            statusDot.style.animation   = "none";
-            statusText.textContent =
-                "⚠️ Space is sleeping or iframe blocked — use the button below to open directly";
-        }
-    }, 75000);
-
-})();
+function handleIframeError() {
+    document.getElementById('iframeLoading').innerHTML =
+        '<p>⚠️ Could not load the embedded app.</p>' +
+        '<p><a href="https://huggingface.co/spaces/AnkitSheoran/mental-health-analyzer" ' +
+        'target="_blank" class="btn btn-hf">🤗 Open in HuggingFace</a></p>';
+}
 </script>
 
 </body>
